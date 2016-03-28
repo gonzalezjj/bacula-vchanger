@@ -643,7 +643,7 @@ int MagazineState::CreateVolume(const char *vol_label_in)
       --slot;
       while(rc == 0) {
          ++slot;
-         tFormat(label, "%s_%d_%d", conf.storage_name.c_str(), mag_bay, slot);
+         tFormat(label, "%s_%04d_%04d", conf.storage_name.c_str(), mag_bay, slot);
          tFormat(fname, "%s%s%s", mountpoint.c_str(), DIR_DELIM, label.c_str());
          if (access(fname.c_str(), F_OK)) rc = errno;
          else rc = 0;
