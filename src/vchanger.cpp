@@ -368,13 +368,24 @@ static int parse_cmdline(int argc, char *argv[])
  *------------------------------------------------*/
 static int do_list_cmd()
 {
+   bool all_empty;
    int slot, num_slots = changer.NumSlots();
 
+   all_empty = true;
    /* Print all slot numbers, adding volume labels for non-empty slots */
    for (slot = 1; slot <= num_slots; slot++) {
       if (changer.SlotEmpty(slot)) {
-         fprintf(stdout, "%d:\n", slot);
+         if (slot == num_slots && all_empty) {
+            /* 
+             * Bacula considers it an error if no slot has a barcode. 
+             * Return a fake barcode if all slots are empty 
+             */
+            fprintf(stdout, "%d:__%s_ALL_SLOTS_EMPTY__\n", slot, conf.storage_name.c_str());
+         } else {
+            fprintf(stdout, "%d:\n", slot);
+         }
       } else {
+         all_empty = false;
          fprintf(stdout, "%d:%s\n", slot, changer.GetVolumeLabel(slot));
       }
    }
